@@ -35,9 +35,8 @@ export default function Home({
           title="my movie title"
           subTitle="my movie subtitle"
           imgUrl="/static/mountains.jpg"
-          videoId="my movie video"
+          videoId="4zH5iYM4wJo"
         />
-
         <SectionCards
           title="movies"
           size="large"

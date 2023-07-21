@@ -1,4 +1,4 @@
-import videoData from "@/data/videos.json";
+import videoTestData from "@/data/videos.json";
 import { YoutubeProps } from "@/types/scriptTypes";
 
 export type VideoTypes = {
@@ -7,17 +7,23 @@ export type VideoTypes = {
   imgUrl: string;
 };
 
-export const getCommonVideos = async (url: string) => {
+const fetchVideos = async (url: string) => {
   const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
   const BASE_URL = "https://youtube.googleapis.com/youtube/v3";
 
-  try {
-    const response = await fetch(
-      `${BASE_URL}/${url}&maxResults=25&key=${YOUTUBE_API_KEY}`
-    );
+  const response = await fetch(
+    `${BASE_URL}/${url}&maxResults=8&key=${YOUTUBE_API_KEY}`
+  );
 
-    const data = await response.json();
+  return await response.json();
+};
+
+export const getCommonVideos = async (url: string) => {
+  try {
+    const isDev = process.env.DEVELOPMENT;
+
+    const data = isDev ? videoTestData : await fetchVideos(url);
 
     if (data?.error) {
       console.error("Youtube API error: " + data.error);
@@ -25,10 +31,16 @@ export const getCommonVideos = async (url: string) => {
     }
 
     return data?.items.map((item: any, i: string) => {
+      const snippet = item.snippet;
+
       return {
         id: item?.id?.videoId ? item?.id?.videoId : i + 1,
-        title: item.snippet.title,
-        imgUrl: item?.snippet?.thumbnails?.high?.url,
+        title: snippet.title,
+        imgUrl: snippet?.thumbnails?.high?.url,
+        description: snippet.description,
+        publishTime: snippet.publishedAt,
+        channelTitle: snippet?.channelTitle,
+        statistics: item?.statistics ? item?.statistics : { viewCount: 0 },
       };
     });
   } catch (error) {
@@ -46,7 +58,13 @@ export const getVideos = (searchQuery: string) => {
 
 export const getPopularVideos = () => {
   const URL =
-    "videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=NG";
+    "videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=US";
+
+  return getCommonVideos(URL);
+};
+
+export const getYoutubeVideoById = (id: string) => {
+  const URL = `videos?part=snippet%2CcontentDetails%2Cstatistics&id=${id}`;
 
   return getCommonVideos(URL);
 };

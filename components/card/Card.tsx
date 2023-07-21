@@ -52,6 +52,9 @@ const Card = ({
           fill
           onError={handleOnError}
           className={styles.cardImg}
+          style={{
+            objectFit: "cover",
+          }}
         />
       </motion.div>
     </div>

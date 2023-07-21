@@ -15,7 +15,7 @@ const BaseLayout = ({ children }: Props) => {
   return (
     <>
       <NavBar />
-      <main className={robotoSlab.className}>{children}</main>;
+      <main className={robotoSlab.className}>{children}</main>
     </>
   );
 };
