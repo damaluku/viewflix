@@ -12,7 +12,12 @@ const robotoSlab = Roboto_Slab({
 });
 
 const BaseLayout = ({ children }: Props) => {
-  return <main className={robotoSlab.className}>{children}</main>;
+  return (
+    <>
+      <NavBar />
+      <main className={robotoSlab.className}>{children}</main>;
+    </>
+  );
 };
 
 export default BaseLayout;

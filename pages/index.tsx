@@ -1,9 +1,9 @@
 import Head from "next/head";
-import Image from "next/image";
+
 import styles from "@/styles/Home.module.css";
 import Banner from "@/components/banner/Banner";
 import NavBar from "@/components/nav/Navbar";
-import Card from "@/components/card/Card";
+
 import SectionCards from "@/components/card/SectionCards";
 import { VideoTypes, getPopularVideos, getVideos } from "@/lib/videos";
 
@@ -12,6 +12,7 @@ interface Props {
   travelVid: VideoTypes[];
   productivityVid: VideoTypes[];
   popularVid: VideoTypes[];
+  session: any;
 }
 
 export default function Home({
@@ -30,7 +31,6 @@ export default function Home({
       </Head>
 
       <div className={styles.main}>
-        <NavBar />
         <Banner
           title="my movie title"
           subTitle="my movie subtitle"
@@ -67,7 +67,7 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: Object) {
   const movieVid = await getVideos("movies");
   const travelVid = await getVideos("travel");
   const productivityVid = await getVideos("productivity");

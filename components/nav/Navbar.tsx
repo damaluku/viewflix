@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import { MdOutlineExpandMore, MdOutlineExpandLess } from "react-icons/md";
 
+import { signIn, signOut, useSession } from "next-auth/react";
 // import { magic } from "../../lib/magic-client";
 
 const NavBar = () => {
@@ -14,6 +15,8 @@ const NavBar = () => {
   const [username, setUsername] = useState("");
   const [didToken, setDidToken] = useState("");
   const router = useRouter();
+
+  const { data: session } = useSession();
 
   /*   useEffect(() => {
     const applyUsernameInNav = async () => {
@@ -55,6 +58,14 @@ const NavBar = () => {
     }
   };
  */
+
+  const handleSignout = async () => {
+    signOut();
+  };
+  const handleSignIn = async () => {
+    signIn();
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
@@ -89,23 +100,32 @@ const NavBar = () => {
         </ul>
         <nav className={styles.navContainer}>
           <div>
-            <button className={styles.usernameBtn} onClick={handleShowDropdown}>
-              <p className={styles.username}>{username}</p>
-              {/** Expand more icon */}
+            {session ? (
+              <button
+                className={styles.usernameBtn}
+                onClick={handleShowDropdown}
+              >
+                <p className={styles.username}>{session?.user?.name}</p>
+                {/** Expand more icon */}
 
-              {showDropdown ? (
-                <MdOutlineExpandLess size={24} />
-              ) : (
-                <MdOutlineExpandMore size={24} />
-              )}
-            </button>
+                {showDropdown && session ? (
+                  <MdOutlineExpandLess size={24} />
+                ) : (
+                  <MdOutlineExpandMore size={24} />
+                )}
+              </button>
+            ) : (
+              <button className={styles.linkName} onClick={handleSignIn}>
+                LOGIN
+              </button>
+            )}
 
             {showDropdown && (
               <div className={styles.navDropdown}>
                 <div>
-                  <Link href="/login" className={styles.linkName}>
+                  <button className={styles.linkName} onClick={handleSignout}>
                     Sign out
-                  </Link>
+                  </button>
                   <div className={styles.lineWrapper}></div>
                 </div>
               </div>
