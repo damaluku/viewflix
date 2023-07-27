@@ -1,6 +1,7 @@
 import React from "react";
 import { Cormorant, Roboto_Slab } from "next/font/google";
 import NavBar from "@/components/nav/Navbar";
+import NavigationBar from "@/components/nav/NavigationBar";
 
 type Props = {
   children: React.ReactNode;
@@ -14,7 +15,8 @@ const robotoSlab = Roboto_Slab({
 const BaseLayout = ({ children }: Props) => {
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
+      <NavigationBar />
       <main className={robotoSlab.className}>{children}</main>
     </>
   );

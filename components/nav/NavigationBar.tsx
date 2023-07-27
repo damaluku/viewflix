@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./navbar.module.css";
 
 import { useRouter } from "next/router";
@@ -7,7 +7,7 @@ import Link from "next/link";
 import { MdOutlineExpandMore, MdOutlineExpandLess } from "react-icons/md";
 import { magic } from "@/lib/magic-client";
 
-const NavBar = () => {
+const NavigationBar = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [username, setUsername] = useState<string | null>(null);
   const [didToken, setDidToken] = useState<string | null>(null);
@@ -17,6 +17,10 @@ const NavBar = () => {
   const router = useRouter();
 
   //   functions
+
+  useEffect(() => {
+    handleUsername();
+  }, [username]);
 
   const handleUsername = async () => {
     try {
@@ -34,10 +38,6 @@ const NavBar = () => {
       setIsLogin(false);
     }
   };
-
-  useEffect(() => {
-    handleUsername();
-  }, [username]);
 
   const handleShowDropdown = (e: any) => {
     e.preventDefault();
@@ -136,4 +136,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default NavigationBar;

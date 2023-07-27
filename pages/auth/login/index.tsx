@@ -1,39 +1,84 @@
-import React, { useState, useEffect, ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
+import styles from "@/styles/Login.module.css";
+
+import { useRouter } from "next/router";
+import Head from "next/head";
+
+import Link from "next/link";
+
+import { magic } from "@/lib/magic-client";
 
 import type { NextPageWithLayout } from "../../_app";
 
-import { useSession, signIn } from "next-auth/react";
-
-import styles from "@/styles/Login.module.css";
-
-import router from "next/router";
-import Head from "next/head";
-import Link from "next/link";
-
 const Login: NextPageWithLayout = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = useSession();
+  const [email, setEmail] = useState<string>("");
+  const [userMsg, setUserMsg] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleSignIn = async () => {
-    setIsLoading(true);
-    signIn();
-
-    if (session) {
-      setIsLoading(false);
-      router.push("/");
-    }
-  };
+  const router = useRouter();
 
   useEffect(() => {
-    if (session) {
-      router.push("/");
-    }
-  }, [session]);
+    const handleComplete = () => {
+      setIsLoading(false);
+    };
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
 
+    return () => {
+      router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
+    };
+  }, [router]);
+
+  const handleOnChangeEmail = (e: { target: { value: any } }) => {
+    setUserMsg("");
+    const email = e.target.value;
+    setEmail(email);
+  };
+
+  const handleLoginWithEmail = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    if (email) {
+      // log in a user by their email
+      try {
+        setIsLoading(true);
+
+        const didToken = await magic?.auth.loginWithMagicLink({
+          email,
+        });
+        if (didToken) {
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${didToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          const loggedInResponse = await response.json();
+          if (loggedInResponse.done) {
+            router.push("/");
+          } else {
+            setIsLoading(false);
+            setUserMsg("Something went wrong logging in");
+          }
+        }
+      } catch (error) {
+        // Handle errors if required!
+        console.error("Something went wrong logging in", error);
+        setIsLoading(false);
+      }
+    } else {
+      // show user message
+      setIsLoading(false);
+      setUserMsg("Enter a valid email address");
+    }
+  };
   return (
     <div className={styles.container}>
       <Head>
-        <title>Viewflix SignIn</title>
+        <title>Netflix SignIn</title>
       </Head>
 
       <header className={styles.header}>
@@ -63,10 +108,18 @@ const Login: NextPageWithLayout = () => {
 
       <main className={styles.main}>
         <div className={styles.mainWrapper}>
-          <h1 className={styles.signinHeader}>VIEWFLIX</h1>
+          <h1 className={styles.signinHeader}>Sign In</h1>
 
-          <button onClick={handleSignIn} className={styles.loginBtn}>
-            {isLoading && !session ? "Loading..." : "Sign In"}
+          <input
+            type="text"
+            placeholder="Email address"
+            className={styles.emailInput}
+            onChange={handleOnChangeEmail}
+          />
+
+          <p className={styles.userMsg}>{userMsg}</p>
+          <button onClick={handleLoginWithEmail} className={styles.loginBtn}>
+            {isLoading ? "Loading..." : "Sign In"}
           </button>
         </div>
       </main>

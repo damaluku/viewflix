@@ -2,23 +2,22 @@ import Head from "next/head";
 
 import styles from "@/styles/Home.module.css";
 import Banner from "@/components/banner/Banner";
-import NavBar from "@/components/nav/Navbar";
 
 import SectionCards from "@/components/card/SectionCards";
 import { VideoTypes, getPopularVideos, getVideos } from "@/lib/videos";
 
 interface Props {
   movieVid: VideoTypes[];
-  travelVid: VideoTypes[];
-  productivityVid: VideoTypes[];
+  musicVid: VideoTypes[];
+  // seriesVid: VideoTypes[];
   popularVid: VideoTypes[];
   session: any;
 }
 
 export default function Home({
   movieVid,
-  travelVid,
-  productivityVid,
+  musicVid,
+  // seriesVid,
   popularVid,
 }: Props) {
   return (
@@ -44,17 +43,17 @@ export default function Home({
           videos={movieVid}
         />
         <SectionCards
-          title="travel"
+          title="music"
           size="small"
           shouldScale
-          videos={travelVid}
+          videos={musicVid}
         />
-        <SectionCards
-          title="productivity"
+        {/*   <SectionCards
+          title="series"
           size="medium"
           shouldScale
-          videos={productivityVid}
-        />
+          videos={seriesVid}
+        /> */}
         <SectionCards
           title="popular"
           size="small"
@@ -68,15 +67,15 @@ export default function Home({
 
 export async function getServerSideProps(context: Object) {
   const movieVid = await getVideos("movies");
-  const travelVid = await getVideos("travel");
-  const productivityVid = await getVideos("productivity");
+  const musicVid = await getVideos("music");
+  // const seriesVid = await getVideos("series");
   const popularVid = await getPopularVideos();
 
   return {
     props: {
       movieVid: movieVid ? movieVid : [],
-      travelVid: travelVid ? travelVid : [],
-      productivityVid: productivityVid ? productivityVid : [],
+      musicVid: musicVid ? musicVid : [],
+      // seriesVid: seriesVid ? seriesVid : [],
       popularVid: popularVid ? popularVid : [],
     },
   };

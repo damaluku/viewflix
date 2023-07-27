@@ -8,6 +8,7 @@ import clsx from "classnames";
 
 import { getSession } from "next-auth/react";
 import { getYoutubeVideoById } from "@/lib/videos";
+import AdminLayout from "@/layouts/AdminLayout";
 
 Modal.setAppElement("#__next");
 
@@ -83,61 +84,63 @@ const Video = ({ video }: any) => {
   };
 
   return (
-    <div className={styles.container}>
-      <Modal
-        isOpen={true}
-        contentLabel="Watch the video"
-        onRequestClose={() => router.back()}
-        className={styles.modal}
-        overlayClassName={styles.overlay}
-      >
-        <iframe
-          id="ytplayer"
-          className={styles.videoPlayer}
-          // type="text/html"
-          width="100%"
-          height="360"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=0&origin=http://example.com&controls=0&rel=1`}
-          frameBorder="0"
-        ></iframe>
+    <AdminLayout>
+      <div className={styles.container}>
+        <Modal
+          isOpen={true}
+          contentLabel="Watch the video"
+          onRequestClose={() => router.back()}
+          className={styles.modal}
+          overlayClassName={styles.overlay}
+        >
+          <iframe
+            id="ytplayer"
+            className={styles.videoPlayer}
+            // type="text/html"
+            width="100%"
+            height="360"
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=0&origin=http://example.com&controls=0&rel=1`}
+            frameBorder="0"
+          ></iframe>
 
-        <div className={styles.likeDislikeBtnWrapper}>
-          <div className={styles.likeBtnWrapper}>
-            <button onClick={handleToggleLike}>
+          <div className={styles.likeDislikeBtnWrapper}>
+            <div className={styles.likeBtnWrapper}>
+              <button onClick={handleToggleLike}>
+                <div className={styles.btnWrapper}>
+                  {/* <Like selected={toggleLike} />  */}
+                  like
+                </div>
+              </button>
+            </div>
+            <button onClick={handleToggleDislike}>
               <div className={styles.btnWrapper}>
-                {/* <Like selected={toggleLike} />  */}
-                like
+                {/* <DisLike selected={toggleDisLike} /> */}
+                DisLike
               </div>
             </button>
           </div>
-          <button onClick={handleToggleDislike}>
-            <div className={styles.btnWrapper}>
-              {/* <DisLike selected={toggleDisLike} /> */}
-              DisLike
-            </div>
-          </button>
-        </div>
-        <div className={styles.modalBody}>
-          <div className={styles.modalBodyContent}>
-            <div className={styles.col1}>
-              <p className={styles.publishTime}>{publishTime}</p>
-              <p className={styles.title}>{title}</p>
-              <p className={styles.description}>{description}</p>
-            </div>
-            <div className={styles.col2}>
-              <p className={clsx(styles.subText, styles.subTextWrapper)}>
-                <span className={styles.textColor}>Cast: </span>
-                <span className={styles.channelTitle}>{channelTitle}</span>
-              </p>
-              <p className={clsx(styles.subText, styles.subTextWrapper)}>
-                <span className={styles.textColor}>View Count: </span>
-                <span className={styles.channelTitle}>{viewCount}</span>
-              </p>
+          <div className={styles.modalBody}>
+            <div className={styles.modalBodyContent}>
+              <div className={styles.col1}>
+                <p className={styles.publishTime}>{publishTime}</p>
+                <p className={styles.title}>{title}</p>
+                <p className={styles.description}>{description}</p>
+              </div>
+              <div className={styles.col2}>
+                <p className={clsx(styles.subText, styles.subTextWrapper)}>
+                  <span className={styles.textColor}>Cast: </span>
+                  <span className={styles.channelTitle}>{channelTitle}</span>
+                </p>
+                <p className={clsx(styles.subText, styles.subTextWrapper)}>
+                  <span className={styles.textColor}>View Count: </span>
+                  <span className={styles.channelTitle}>{viewCount}</span>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </Modal>
-    </div>
+        </Modal>
+      </div>
+    </AdminLayout>
   );
 };
 
@@ -156,7 +159,12 @@ export async function getStaticProps(context: any) {
 }
 
 export async function getStaticPaths() {
-  const listOfVideos = ["uYPbbksJxIg", "4zH5iYM4wJo", "KCPEHsAViiQ"];
+  const listOfVideos = [
+    "uYPbbksJxIg",
+    "y3CtNL6RTOY",
+    "y3CtNL6RTOY",
+    "pBk4NYhWNMM",
+  ];
 
   const paths = listOfVideos.map((videoId) => ({
     params: { videoId },
