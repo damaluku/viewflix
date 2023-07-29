@@ -28,6 +28,8 @@ const NavigationBar = () => {
 
       const didToken = await magic?.user.getIdToken();
 
+      // console.log(didToken);
+
       if (email) {
         setUsername(email);
         setDidToken(didToken);

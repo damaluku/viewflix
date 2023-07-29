@@ -2,8 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { magicAdmin } from "../../lib/magic";
 import jwt from "jsonwebtoken";
-import { createNewUser, isNewUser } from "../../lib/db/hasura";
+// import { createNewUser, isNewUser } from "../../lib/db/hasura";
 import { setTokenCookie } from "../../lib/cookies";
+import { MagicUserMetadata } from "@magic-sdk/admin";
+import { createNewUser, isNewUser } from "@/lib/db/hasura";
 
 export default async function login(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
@@ -11,7 +13,8 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
       const auth = req.headers.authorization;
       const didToken = auth ? auth.substr(7) : "";
 
-      const metadata = await magicAdmin.users.getMetadataByToken(didToken);
+      // const didToken = auth ? auth.slice(7, auth.length) : "";
+      const metadata = await magicAdmin?.users.getMetadataByToken(didToken);
 
       const token = jwt.sign(
         {
@@ -24,12 +27,14 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
             "x-hasura-user-id": `${metadata.issuer}`,
           },
         },
-        process.env.JWT_SECRET
+        process.env.JWT_SECRET!
       );
 
       const isNewUserQuery = await isNewUser(token, metadata.issuer);
+
       isNewUserQuery && (await createNewUser(token, metadata));
       setTokenCookie(token, res);
+
       res.send({ done: true });
     } catch (error) {
       console.error("Something went wrong logging in", error);
