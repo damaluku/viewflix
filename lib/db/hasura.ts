@@ -74,7 +74,7 @@ async function createNewUser(token: string, metadata: any) {
     token
   );
 
-  console.log(response);
+  // console.log(response);
   return response;
 }
 
