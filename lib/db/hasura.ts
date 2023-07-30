@@ -78,4 +78,101 @@ async function createNewUser(token: string, metadata: any) {
   return response;
 }
 
-export { queryHasuraGraphQL, isNewUser, createNewUser };
+async function findVideoIdByUserId(
+  userId: string,
+  videoId: string | string[] | undefined,
+  token: string
+) {
+  const operationsDoc = `
+  query findVideoIdByUserId($userId: String!, $videoId: String!) {
+    stats(where: {userId: {_eq: $userId}, videoId: {_eq: $videoId}}) {
+      favourited
+      id
+      userId
+      videoId
+      watched
+    }
+  }
+`;
+
+  const response = await queryHasuraGraphQL(
+    operationsDoc,
+    "findVideoIdByUserId",
+    { videoId, userId },
+    token
+  );
+
+  return response?.data?.stats?.length > 0;
+}
+
+interface StatsProps {
+  favourited: null | number;
+  userId: string;
+  watched: boolean;
+  videoId: string | string[] | undefined;
+}
+
+async function insertStats(
+  token: string,
+  { favourited, userId, watched, videoId }: StatsProps
+) {
+  const operationsDoc = `
+  mutation insertStats($favourited: Int!, $userId: String!, $watched: Boolean!, $videoId: String!) {
+    insert_stats_one(object: {
+      favourited: $favourited, 
+      userId: $userId, 
+      watched: $watched, 
+      videoId: $videoId
+    }) {
+        favourited
+        userId
+    }
+  }
+`;
+
+  return await queryHasuraGraphQL(
+    operationsDoc,
+    "insertStats",
+    { favourited, userId, watched, videoId },
+    token
+  );
+}
+
+async function updateStats(
+  token: string,
+  { favourited, userId, watched, videoId }: StatsProps
+) {
+  const operationsDoc = `
+mutation updateStats($favourited: Int!, $userId: String!, $watched: Boolean!, $videoId: String!) {
+  update_stats(
+    _set: {watched: $watched, favourited: $favourited}, 
+    where: {
+      userId: {_eq: $userId}, 
+      videoId: {_eq: $videoId}
+    }) {
+    returning {
+      favourited,
+      userId,
+      watched,
+      videoId
+    }
+  }
+}
+`;
+
+  return await queryHasuraGraphQL(
+    operationsDoc,
+    "updateStats",
+    { favourited, userId, watched, videoId },
+    token
+  );
+}
+
+export {
+  queryHasuraGraphQL,
+  isNewUser,
+  createNewUser,
+  findVideoIdByUserId,
+  updateStats,
+  insertStats,
+};
