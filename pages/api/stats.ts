@@ -5,32 +5,27 @@ import jwt from "jsonwebtoken";
 import { verifyToken } from "@/lib/utils";
 import { findVideoIdByUserId, insertStats, updateStats } from "@/lib/db/hasura";
 
-/* import {
-  findVideoIdByUser,
-  updateStats,
-  insertStats,
-} from "../../lib/db/hasura"; */
-
 export default async function stats(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "POST") {
-    try {
-      const token = req.cookies.token;
+  try {
+    const token = req.cookies.token;
 
-      if (!token) {
-        res.status(403).send({});
-      } else {
-        const { favourited, watched = true, videoId } = req.body;
+    if (!token) {
+      res.status(403).send({});
+    } else {
+      const inputParams = req.method === "POST" ? req.body : req.query;
+      const { videoId } = inputParams;
 
-        if (videoId) {
-          const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET!);
+      if (videoId) {
+        const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET!);
 
-          const userId = decodedToken?.issuer;
+        const userId = decodedToken?.issuer;
 
-          const doesStatsExist = await findVideoIdByUserId(
-            userId,
-            videoId,
-            token
-          );
+        const findVideo = await findVideoIdByUserId(userId, videoId, token);
+
+        const doesStatsExist = findVideo?.length > 0;
+
+        if (req.method === "POST") {
+          const { favourited, watched = true } = req.body;
 
           if (doesStatsExist) {
             //Updating
@@ -59,11 +54,17 @@ export default async function stats(req: NextApiRequest, res: NextApiResponse) {
               data: response,
             });
           }
+        } else {
+          if (doesStatsExist) {
+            res.send(findVideo);
+          } else {
+            res.status(404).send({ user: null, message: "video not found" });
+          }
         }
       }
-    } catch (error: any) {
-      console.log("Error occured /stats", error);
-      res.status(500).send({ error: error?.message });
     }
+  } catch (error: any) {
+    console.log("Error occured /stats", error);
+    res.status(500).send({ done: false, error: error?.message });
   }
 }

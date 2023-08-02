@@ -8,10 +8,10 @@ import clsx from "classnames";
 
 import { getSession } from "next-auth/react";
 import { getYoutubeVideoById } from "@/lib/videos";
-import DisLike from "@/components/icons/dislikeIcon";
 import Like from "@/components/icons/LikeIcon";
 
 import cls from "classnames";
+import DisLike from "@/components/icons/DislikeIcon";
 
 Modal.setAppElement("#__next");
 
@@ -36,24 +36,25 @@ const Video = ({ video }: any) => {
     statistics: { viewCount } = { viewCount: 0 },
   } = video;
 
-  useEffect(() => {
-    const handleLikeDislikeService = async () => {
-      const response = await fetch(`/api/stats?videoId=${videoId}`, {
-        method: "GET",
-      });
-      const data = await response.json();
+  const handleLikeDislikeService = async () => {
+    const response = await fetch(`/api/stats?videoId=${videoId}`, {
+      method: "GET",
+    });
+    const data = await response.json();
 
-      if (data.length > 0) {
-        const favourited = data[0].favourited;
-        if (favourited === 1) {
-          setToggleLike(true);
-        } else if (favourited === 0) {
-          setToggleDisLike(true);
-        }
+    if (data.length > 0) {
+      const favourited = data[0].favourited;
+      if (favourited === 1) {
+        setToggleLike(true);
+      } else if (favourited === 0) {
+        setToggleDisLike(true);
       }
-    };
+    }
+  };
+
+  useEffect(() => {
     handleLikeDislikeService();
-  }, [videoId]);
+  }, []);
 
   const runRatingService = async (favourited: number) => {
     return await fetch("/api/stats", {
@@ -61,6 +62,7 @@ const Video = ({ video }: any) => {
       body: JSON.stringify({
         videoId,
         favourited,
+        watched: true,
       }),
       headers: {
         "Content-Type": "application/json",

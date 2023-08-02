@@ -102,7 +102,7 @@ async function findVideoIdByUserId(
     token
   );
 
-  return response?.data?.stats?.length > 0;
+  return response?.data?.stats;
 }
 
 interface StatsProps {

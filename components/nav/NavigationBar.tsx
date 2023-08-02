@@ -63,7 +63,7 @@ const NavigationBar = () => {
       setIsLogin(false);
     } catch (error) {
       console.error("Error logging out", error);
-      router.push("/login");
+      router.push("/auth/login");
 
       setIsLogin(false);
     }
