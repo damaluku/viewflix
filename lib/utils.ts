@@ -1,4 +1,5 @@
 import { jwtVerify } from "jose";
+import jwt from "jsonwebtoken";
 
 export async function verifyToken(token: string | Uint8Array) {
   try {

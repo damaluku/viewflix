@@ -4,21 +4,26 @@ import styles from "@/styles/Home.module.css";
 import Banner from "@/components/banner/Banner";
 
 import SectionCards from "@/components/card/SectionCards";
-import { VideoTypes, getPopularVideos, getVideos } from "@/lib/videos";
+import {
+  VideoTypes,
+  getPopularVideos,
+  getVideos,
+  getWatchItAgainVideos,
+} from "@/lib/videos";
+import UseRedirectUser from "@/utils/redirectUser";
 
 interface Props {
   movieVid: VideoTypes[];
   musicVid: VideoTypes[];
-  // seriesVid: VideoTypes[];
   popularVid: VideoTypes[];
-  session: any;
+  watchItAgainVideos: VideoTypes[];
 }
 
 export default function Home({
   movieVid,
   musicVid,
-  // seriesVid,
   popularVid,
+  watchItAgainVideos,
 }: Props) {
   return (
     <>
@@ -36,27 +41,33 @@ export default function Home({
           imgUrl="/static/mountains.jpg"
           videoId="4zH5iYM4wJo"
         />
+
         <SectionCards
           title="movies"
           size="large"
           shouldScale
           videos={movieVid}
         />
+
+        {watchItAgainVideos.length > 0 && (
+          <SectionCards
+            title="Watch it again"
+            size="small"
+            shouldScale
+            videos={watchItAgainVideos}
+          />
+        )}
+
         <SectionCards
           title="music"
           size="small"
           shouldScale
           videos={musicVid}
         />
-        {/*   <SectionCards
-          title="series"
-          size="medium"
-          shouldScale
-          videos={seriesVid}
-        /> */}
+
         <SectionCards
           title="popular"
-          size="small"
+          size="medium"
           shouldScale
           videos={popularVid}
         />
@@ -65,18 +76,31 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps(context: Object) {
+export async function getServerSideProps(context: any) {
+  const { userId, token } = await UseRedirectUser(context);
+
+  if (!userId) {
+    return {
+      props: {},
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+
   const movieVid = await getVideos("movies");
   const musicVid = await getVideos("music");
-  // const seriesVid = await getVideos("series");
   const popularVid = await getPopularVideos();
+
+  const watchItAgainVideos = await getWatchItAgainVideos(userId, token);
 
   return {
     props: {
       movieVid: movieVid ? movieVid : [],
       musicVid: musicVid ? musicVid : [],
-      // seriesVid: seriesVid ? seriesVid : [],
       popularVid: popularVid ? popularVid : [],
+      watchItAgainVideos: watchItAgainVideos ? watchItAgainVideos : [],
     },
   };
 }

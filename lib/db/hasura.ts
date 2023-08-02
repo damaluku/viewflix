@@ -168,6 +168,53 @@ mutation updateStats($favourited: Int!, $userId: String!, $watched: Boolean!, $v
   );
 }
 
+async function getWatchedVideos(userId: string, token: string) {
+  const operationsDoc = `
+  query watchedVideos($userId: String!) {
+    stats(where: {
+      watched: {_eq: true}, 
+      userId: {_eq: $userId},
+    }) {
+      videoId
+    }
+  }
+`;
+
+  const response = await queryHasuraGraphQL(
+    operationsDoc,
+    "watchedVideos",
+    { userId },
+    token
+  );
+
+  return response?.data?.stats;
+  // return response?.data?.stats ? response?.data?.stats : [];
+}
+
+export async function getMyListVideos(userId: string, token: string) {
+  const operationsDoc = `
+  query favouritedVideos($userId: String!) {
+    stats(where: {
+      userId: {_eq: $userId}, 
+      favourited: {_eq: 1}
+    }) {
+      videoId
+    }
+  }
+`;
+
+  const response = await queryHasuraGraphQL(
+    operationsDoc,
+    "favouritedVideos",
+    {
+      userId,
+    },
+    token
+  );
+
+  return response?.data?.stats;
+}
+
 export {
   queryHasuraGraphQL,
   isNewUser,
@@ -175,4 +222,5 @@ export {
   findVideoIdByUserId,
   updateStats,
   insertStats,
+  getWatchedVideos,
 };

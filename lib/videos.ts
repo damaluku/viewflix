@@ -1,5 +1,6 @@
 import videoTestData from "@/data/videos.json";
 import { YoutubeProps } from "@/types/scriptTypes";
+import { getMyListVideos, getWatchedVideos } from "./db/hasura";
 
 export type VideoTypes = {
   id: string;
@@ -32,11 +33,13 @@ export const getCommonVideos = async (url: string) => {
 
     return data?.items.map((item: any, i: string) => {
       const snippet = item.snippet;
+      // const id = item?.id?.videoId || item?.id;
+      const videoId = item?.id?.videoId ? item?.id?.videoId : item.id;
 
       return {
-        id: item?.id?.videoId ? item?.id?.videoId : i + 1,
+        id: videoId,
         title: snippet.title,
-        imgUrl: snippet?.thumbnails?.high?.url,
+        imgUrl: `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`,
         description: snippet.description,
         publishTime: snippet.publishedAt,
         channelTitle: snippet?.channelTitle,
@@ -67,4 +70,27 @@ export const getYoutubeVideoById = (id: string) => {
   const URL = `videos?part=snippet%2CcontentDetails%2Cstatistics&id=${id}`;
 
   return getCommonVideos(URL);
+};
+
+export const getWatchItAgainVideos = async (userId: string, token: string) => {
+  const videos = await getWatchedVideos(userId, token);
+
+  return videos.map((video: any) => {
+    return {
+      id: video?.videoId,
+      imgUrl: `https://i.ytimg.com/vi/${video?.videoId}/maxresdefault.jpg`,
+    };
+  });
+};
+
+export const getMyList = async (userId: string, token: string) => {
+  const videos = await getMyListVideos(userId, token);
+  return (
+    videos?.map((video: any) => {
+      return {
+        id: video.videoId,
+        imgUrl: `https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`,
+      };
+    }) || []
+  );
 };

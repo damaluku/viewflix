@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import jwt from "jsonwebtoken";
-
 import { verifyToken } from "@/lib/utils";
 import { findVideoIdByUserId, insertStats, updateStats } from "@/lib/db/hasura";
 
@@ -16,9 +14,7 @@ export default async function stats(req: NextApiRequest, res: NextApiResponse) {
       const { videoId } = inputParams;
 
       if (videoId) {
-        const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET!);
-
-        const userId = decodedToken?.issuer;
+        const userId: any = await verifyToken(token);
 
         const findVideo = await findVideoIdByUserId(userId, videoId, token);
 
