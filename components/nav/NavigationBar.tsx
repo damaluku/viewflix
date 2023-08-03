@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { MdOutlineExpandMore, MdOutlineExpandLess } from "react-icons/md";
 import { magic } from "@/lib/magic-client";
+import clx from "classnames";
 
 const NavigationBar = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
@@ -93,14 +94,10 @@ const NavigationBar = () => {
           </div>
         </Link>
 
-        <ul className={styles.navItems}>
-          <li className={styles.navItem}>
-            <Link href="/">Home</Link>
-          </li>
-          <li className={styles.navItem2}>
-            <Link href="/browse/my-list">My List</Link>
-          </li>
-        </ul>
+        <div className={styles.navItems}>
+          <Link href="/browse/my-list">My List</Link>
+        </div>
+
         <nav className={styles.navContainer}>
           <div>
             {isLogin ? (

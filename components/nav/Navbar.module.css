@@ -32,26 +32,12 @@
 }
 
 .navItems {
-  display: flex;
-  flex-direction: row;
-  width: 50%;
-  margin-left: 1.5rem /* 24px */;
-  font-size: 0.875rem /* 14px */;
+  width: 100%;
   font-size: 1rem;
-
   line-height: 1.25rem /* 20px */;
   list-style: none;
-}
-
-.navItem {
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 0.75rem /* 12px */;
-}
-
-.navItem2 {
-  cursor: pointer;
+  padding: 0;
+  background-color: red;
 }
 
 .navContainer {
