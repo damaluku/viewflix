@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { useRouter } from "next/router";
-import styles from "./banner.module.css";
+import styles from "@/styles/Banner.module.css";
 
 import { BsFillPlayFill } from "react-icons/bs";
 

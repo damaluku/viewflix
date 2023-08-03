@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import Card from "./Card";
 import Link from "next/link";
 import clsx from "classnames";
-import styles from "./Section-card.module.css";
+import styles from "@/styles/Section-card.module.css";
 import { VideoTypes } from "@/lib/videos";
 
 type PageProps = {

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import styles from "./navbar.module.css";
+import styles from "@/styles/Navbar.module.css";
 
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 import { MdOutlineExpandMore, MdOutlineExpandLess } from "react-icons/md";
 import { magic } from "@/lib/magic-client";
-import clx from "classnames";
 
 const NavigationBar = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
