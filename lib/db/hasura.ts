@@ -187,8 +187,8 @@ async function getWatchedVideos(userId: string, token: string) {
     token
   );
 
-  return response?.data?.stats;
-  // return response?.data?.stats ? response?.data?.stats : [];
+  // return response?.data?.stats;
+  return response?.data?.stats ? response?.data?.stats : [];
 }
 
 export async function getMyListVideos(userId: string, token: string) {

@@ -12,7 +12,7 @@ export default async function logout(
       return res.status(401).json({ message: "User is not logged in" });
     const token = req.cookies.token;
 
-    const userId = await verifyToken(token);
+    const userId: any = await verifyToken(token);
     removeTokenCookie(res);
     try {
       await magicAdmin.users.logoutByIssuer(userId);
@@ -20,7 +20,7 @@ export default async function logout(
       console.error("Error occurred while logging out magic user", error);
     }
     //redirects user to login page
-    res.writeHead(302, { Location: "/login" });
+    res.writeHead(302, { Location: "/auth/login" });
     res.end();
   } catch (error) {
     console.error({ error });

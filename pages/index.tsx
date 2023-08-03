@@ -25,6 +25,7 @@ export default function Home({
   popularVid,
   watchItAgainVideos,
 }: Props) {
+  const bannerImg = "https://i.ytimg.com/vi/y3CtNL6RTOY/maxresdefault.jpg";
   return (
     <>
       <Head>
@@ -36,10 +37,10 @@ export default function Home({
 
       <div className={styles.main}>
         <Banner
-          title="my movie title"
-          subTitle="my movie subtitle"
-          imgUrl="/static/mountains.jpg"
-          videoId="4zH5iYM4wJo"
+          title="Meg2"
+          subTitle="The trench"
+          imgUrl={`${bannerImg ? bannerImg : "/static/mountains.jpg"}`}
+          videoId="y3CtNL6RTOY"
         />
 
         <SectionCards

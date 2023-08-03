@@ -78,7 +78,7 @@ const Login: NextPageWithLayout = () => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Netflix SignIn</title>
+        <title>Viewflix SignIn</title>
       </Head>
 
       <header className={styles.header}>
