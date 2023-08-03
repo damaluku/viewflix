@@ -1,5 +1,3 @@
-import NavBar from "@/components/nav/Navbar";
-
 type Props = {
   children: React.ReactNode;
 };

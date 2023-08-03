@@ -1,6 +1,5 @@
 import React from "react";
 import { Cormorant, Roboto_Slab } from "next/font/google";
-import NavBar from "@/components/nav/Navbar";
 import NavigationBar from "@/components/nav/NavigationBar";
 
 type Props = {
