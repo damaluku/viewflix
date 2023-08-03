@@ -1,8 +1,3 @@
-/*
-This is an example snippet - you should consider tailoring it
-to your service.
-*/
-
 async function queryHasuraGraphQL(
   operationsDoc: string,
   operationName: string,

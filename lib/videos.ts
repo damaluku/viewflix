@@ -1,5 +1,4 @@
 import videoTestData from "@/data/videos.json";
-import { YoutubeProps } from "@/types/scriptTypes";
 import { getMyListVideos, getWatchedVideos } from "./db/hasura";
 
 export type VideoTypes = {

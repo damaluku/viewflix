@@ -2,9 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { magicAdmin } from "../../lib/magic";
 import jwt from "jsonwebtoken";
-// import { createNewUser, isNewUser } from "../../lib/db/hasura";
 import { setTokenCookie } from "../../lib/cookies";
-import { MagicUserMetadata } from "@magic-sdk/admin";
 import { createNewUser, isNewUser } from "@/lib/db/hasura";
 
 export default async function login(req: NextApiRequest, res: NextApiResponse) {
